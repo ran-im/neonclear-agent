@@ -7,172 +7,315 @@
   <style>
     * { box-sizing: border-box; margin: 0; padding: 0; }
     body {
-      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
-      background: linear-gradient(135deg, #0a0a0f 0%, #1a1a2e 100%);
+      font-family: 'JetBrains Mono', 'Fira Code', 'Consolas', monospace;
+      background: 
+        radial-gradient(ellipse at 20% 80%, rgba(0, 255, 136, 0.08) 0%, transparent 50%),
+        radial-gradient(ellipse at 80% 20%, rgba(0, 212, 255, 0.08) 0%, transparent 50%),
+        radial-gradient(ellipse at 50% 50%, rgba(88, 28, 135, 0.15) 0%, transparent 70%),
+        linear-gradient(180deg, #0d0d12 0%, #13131a 50%, #0a0a0f 100%);
       min-height: 100vh;
-      color: #e0e0e0;
+      color: #c8d4e0;
+      position: relative;
+      overflow-x: hidden;
+    }
+    body::before {
+      content: '';
+      position: fixed;
+      top: 0;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      background-image: 
+        radial-gradient(circle at 10% 20%, rgba(0, 255, 136, 0.03) 1px, transparent 1px),
+        radial-gradient(circle at 90% 80%, rgba(0, 212, 255, 0.03) 1px, transparent 1px),
+        radial-gradient(circle at 50% 10%, rgba(168, 85, 247, 0.03) 1px, transparent 1px);
+      background-size: 60px 60px, 80px 80px, 100px 100px;
+      pointer-events: none;
+      z-index: 0;
+    }
+    body::after {
+      content: '{ }';
+      position: fixed;
+      bottom: 20px;
+      right: 30px;
+      font-size: 120px;
+      opacity: 0.03;
+      font-weight: bold;
+      pointer-events: none;
+      z-index: 0;
     }
     .container {
       max-width: 800px;
       margin: 0 auto;
       padding: 2rem;
+      position: relative;
+      z-index: 1;
     }
     header {
       text-align: center;
       margin-bottom: 2rem;
     }
     h1 {
-      font-size: 2.5rem;
-      background: linear-gradient(90deg, #00ff88, #00d4ff);
+      font-size: 3rem;
+      font-weight: 700;
+      letter-spacing: -1px;
+      background: linear-gradient(135deg, #00ff88 0%, #00d4ff 50%, #a855f7 100%);
       -webkit-background-clip: text;
       -webkit-text-fill-color: transparent;
+      background-clip: text;
       margin-bottom: 0.5rem;
+      text-shadow: 0 0 40px rgba(0, 255, 136, 0.3);
+    }
+    .subtitle {
+      font-size: 0.9rem;
+      color: #6b7280;
+      letter-spacing: 2px;
+      text-transform: uppercase;
     }
     .badge {
       display: inline-block;
-      background: rgba(0, 255, 136, 0.1);
-      border: 1px solid #00ff88;
-      color: #00ff88;
-      padding: 0.25rem 0.75rem;
-      border-radius: 1rem;
-      font-size: 0.75rem;
-    }
-    .setup-warning {
-      background: rgba(255, 193, 7, 0.1);
-      border: 1px solid #ffc107;
-      color: #ffc107;
-      padding: 1rem;
-      border-radius: 0.75rem;
-      margin-bottom: 1.5rem;
-      text-align: center;
-    }
-    .chat-container {
-      background: rgba(255, 255, 255, 0.03);
-      border: 1px solid rgba(255, 255, 255, 0.1);
-      border-radius: 1rem;
-      overflow: hidden;
-    }
-    .messages {
-      height: 400px;
-      overflow-y: auto;
-      padding: 1.5rem;
-    }
-    .message {
-      margin-bottom: 1rem;
-      padding: 1rem;
-      border-radius: 0.75rem;
-      line-height: 1.5;
-    }
-    .message.user {
-      background: rgba(0, 212, 255, 0.1);
-      border-left: 3px solid #00d4ff;
-      margin-left: 2rem;
-    }
-    .message.assistant {
-      background: rgba(0, 255, 136, 0.05);
-      border-left: 3px solid #00ff88;
-      margin-right: 2rem;
-    }
-    .message.handover {
-      background: rgba(255, 68, 68, 0.1);
-      border-left: 3px solid #ff4444;
-    }
-    .ai-disclosure {
-      background: rgba(255, 193, 7, 0.1);
-      border: 1px solid #ffc107;
-      color: #ffc107;
-      padding: 0.5rem;
-      border-radius: 0.5rem;
-      font-size: 0.85rem;
-      margin-bottom: 0.5rem;
-      text-align: center;
-    }
-    .privacy-check {
-      background: rgba(0, 255, 136, 0.05);
+      background: rgba(0, 255, 136, 0.08);
       border: 1px solid rgba(0, 255, 136, 0.3);
-      border-radius: 0.5rem;
-      padding: 0.75rem;
-      font-size: 0.8rem;
       color: #00ff88;
-      margin-top: 0.75rem;
+      padding: 0.4rem 1rem;
+      border-radius: 2rem;
+      font-size: 0.7rem;
+      margin-top: 1rem;
+      letter-spacing: 1px;
+      text-transform: uppercase;
     }
-    .input-area {
+    .setup-card {
+      background: rgba(255, 255, 255, 0.02);
+      border: 1px solid rgba(255, 255, 255, 0.08);
+      border-radius: 1rem;
+      padding: 2rem;
+      margin-bottom: 1.5rem;
+      backdrop-filter: blur(10px);
+    }
+    .setup-card h2 {
+      font-size: 1.1rem;
+      color: #00ff88;
+      margin-bottom: 1rem;
       display: flex;
+      align-items: center;
       gap: 0.5rem;
-      padding: 1rem;
-      border-top: 1px solid rgba(255, 255, 255, 0.1);
     }
-    input {
-      flex: 1;
-      padding: 0.75rem 1rem;
-1px solid rgba      border: (255, 255, 255, 0.2);
-      border-radius: 0.5rem;
-      background: rgba(0, 0, 0, 0.3);
-      color: #e0e0e0;
-      font-size: 1rem;
-    }
-    input:focus {
-      outline: none;
-      border-color: #00ff88;
-    }
-    button {
-      padding: 0.75rem 1.5rem;
-      background: linear-gradient(90deg, #00ff88, #00d4ff);
-      border: none;
-      border-radius: 0.5rem;
-      color: #0a0a0f;
-      font-weight: 600;
-      cursor: pointer;
-      transition: transform 0.2s;
-    }
-    button:hover {
-      transform: scale(1.02);
-    }
-    button:disabled {
-      opacity: 0.5;
-      cursor: not-allowed;
-    }
-    .typing {
+    .setup-card h2::before {
+      content: '>';
       color: #00ff88;
-      font-style: italic;
     }
     .api-key-input {
       display: flex;
-      gap: 0.5rem;
+      gap: 0.75rem;
       margin-bottom: 1rem;
     }
     .api-key-input input {
       flex: 1;
+      padding: 0.875rem 1rem;
+      border: 1px solid rgba(0, 255, 136, 0.2);
+      border-radius: 0.5rem;
+      background: rgba(0, 0, 0, 0.4);
+      color: #e0e0e0;
+      font-size: 0.9rem;
+      font-family: inherit;
+      transition: all 0.3s ease;
+    }
+    .api-key-input input:focus {
+      outline: none;
+      border-color: #00ff88;
+      box-shadow: 0 0 20px rgba(0, 255, 136, 0.1);
+    }
+    .api-key-input input::placeholder {
+      color: #4b5563;
     }
     .api-key-input button {
-      white-space: nowrap;
+      padding: 0.875rem 1.5rem;
+      background: linear-gradient(135deg, #00ff88, #00d4ff);
+      border: none;
+      border-radius: 0.5rem;
+      color: #0a0a0f;
+      font-weight: 700;
+      font-size: 0.85rem;
+      cursor: pointer;
+      transition: all 0.3s ease;
+      text-transform: uppercase;
+      letter-spacing: 1px;
+    }
+    .api-key-input button:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 10px 30px rgba(0, 255, 136, 0.3);
+    }
+    .hint {
+      font-size: 0.75rem;
+      color: #4b5563;
+    }
+    .hint a {
+      color: #00d4ff;
+      text-decoration: none;
+    }
+    .chat-container {
+      background: rgba(255, 255, 255, 0.015);
+      border: 1px solid rgba(255, 255, 255, 0.06);
+      border-radius: 1rem;
+      overflow: hidden;
+      backdrop-filter: blur(10px);
+    }
+    .messages {
+      height: 450px;
+      overflow-y: auto;
+      padding: 1.5rem;
+      scroll-behavior: smooth;
+    }
+    .messages::-webkit-scrollbar {
+      width: 6px;
+    }
+    .messages::-webkit-scrollbar-track {
+      background: rgba(255, 255, 255, 0.02);
+    }
+    .messages::-webkit-scrollbar-thumb {
+      background: rgba(0, 255, 136, 0.2);
+      border-radius: 3px;
+    }
+    .message {
+      margin-bottom: 1.25rem;
+      padding: 1rem 1.25rem;
+      border-radius: 0.75rem;
+      line-height: 1.6;
+      font-size: 0.95rem;
+      animation: fadeIn 0.3s ease;
+    }
+    @keyframes fadeIn {
+      from { opacity: 0; transform: translateY(10px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+    .message.user {
+      background: linear-gradient(135deg, rgba(0, 212, 255, 0.1) 0%, rgba(0, 212, 255, 0.05) 100%);
+      border-left: 3px solid #00d4ff;
+      margin-left: 2rem;
+      color: #e0e0e0;
+    }
+    .message.assistant {
+      background: linear-gradient(135deg, rgba(0, 255, 136, 0.08) 0%, rgba(0, 255, 136, 0.02) 100%);
+      border-left: 3px solid #00ff88;
+      margin-right: 2rem;
+      color: #c8d4e0;
+    }
+    .message.handover {
+      background: linear-gradient(135deg, rgba(255, 68, 68, 0.1) 0%, rgba(255, 68, 68, 0.05) 100%);
+      border-left: 3px solid #ff4444;
+    }
+    .ai-disclosure {
+      background: rgba(168, 85, 247, 0.1);
+      border: 1px solid rgba(168, 85, 247, 0.3);
+      color: #a855f7;
+      padding: 0.6rem;
+      border-radius: 0.5rem;
+      font-size: 0.8rem;
+      margin-bottom: 0.75rem;
+      text-align: center;
+      font-weight: 500;
+    }
+    .input-area {
+      display: flex;
+      gap: 0.75rem;
+      padding: 1rem 1.25rem;
+      border-top: 1px solid rgba(255, 255, 255, 0.06);
+      background: rgba(0, 0, 0, 0.2);
+    }
+    #userInput {
+      flex: 1;
+      padding: 0.875rem 1rem;
+      border: 1px solid rgba(255, 255, 255, 0.1);
+      border-radius: 0.5rem;
+      background: rgba(0, 0, 0, 0.4);
+      color: #e0e0e0;
+      font-size: 0.95rem;
+      font-family: inherit;
+      transition: all 0.3s ease;
+    }
+    #userInput:focus {
+      outline: none;
+      border-color: #00ff88;
+      box-shadow: 0 0 20px rgba(0, 255, 136, 0.1);
+    }
+    #userInput::placeholder {
+      color: #4b5563;
+    }
+    #sendBtn {
+      padding: 0.875rem 1.5rem;
+      background: linear-gradient(135deg, #00ff88, #00d4ff);
+      border: none;
+      border-radius: 0.5rem;
+      color: #0a0a0f;
+      font-weight: 700;
+      font-size: 0.85rem;
+      cursor: pointer;
+      transition: all 0.3s ease;
+      text-transform: uppercase;
+      letter-spacing: 1px;
+    }
+    #sendBtn:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 10px 30px rgba(0, 255, 136, 0.3);
+    }
+    #sendBtn:disabled {
+      opacity: 0.5;
+      cursor: not-allowed;
+      transform: none;
+      box-shadow: none;
+    }
+    .typing {
+      color: #00ff88;
+      font-style: italic;
+      animation: pulse 1.5s infinite;
+    }
+    @keyframes pulse {
+      0%, 100% { opacity: 1; }
+      50% { opacity: 0.5; }
     }
     .hidden {
-      display: none;
+      display: none !important;
     }
+    .doodle {
+      position: fixed;
+      font-size: 2rem;
+      opacity: 0.04;
+      pointer-events: none;
+      z-index: 0;
+    }
+    .doodle-1 { top: 10%; left: 5%; transform: rotate(-15deg); }
+    .doodle-2 { bottom: 15%; right: 8%; transform: rotate(10deg); }
+    .doodle-3 { top: 60%; left: 3%; transform: rotate(5deg); }
   </style>
 </head>
 <body>
+  <!-- Decorative doodles -->
+  <div class="doodle doodle-1">⌘</div>
+  <div class="doodle doodle-2">⚡</div>
+  <div class="doodle doodle-3">◈</div>
+
   <div class="container">
     <header>
       <h1>Neon Clear</h1>
-      <span class="badge">Intelligent Transparency Agent</span>
-      <p style="margin-top: 1rem; color: #888;">Bridge of Trust for Neon Arcade</p>
+      <p class="subtitle">// Transparency Advocate</p>
+      <span class="badge">Trust Through Radical Honesty</span>
     </header>
 
-    <div class="setup-warning">
-      <strong>Setup Required:</strong> Enter your Claude API key below to activate the agent
+    <!-- API Key Setup -->
+    <div class="setup-card" id="setupCard">
+      <h2>Connect Your API Key</h2>
+      <div class="api-key-input">
+        <input type="password" id="apiKey" placeholder="sk-ant-..." />
+        <button onclick="saveApiKey()">Connect</button>
+      </div>
+      <p class="hint">Get your key from <a href="https://console.anthropic.com" target="_blank">console.anthropic.com</a></p>
     </div>
 
-    <div class="api-key-input" id="apiKeySetup">
-      <input type="password" id="apiKey" placeholder="Enter your Anthropic API key (sk-ant-...)" />
-      <button onclick="saveApiKey()">Save Key</button>
-    </div>
-
-    <div class="chat-container" id="chatContainer" style="display: none;">
+    <!-- Chat Interface -->
+    <div class="chat-container hidden" id="chatContainer">
       <div class="messages" id="messages"></div>
       <div class="input-area">
-        <input type="text" id="userInput" placeholder="Ask about data privacy, GDPR rights, or cloud performance..." />
+        <input type="text" id="userInput" placeholder="Ask about lag, data privacy, or game recommendations..." />
         <button id="sendBtn" onclick="sendMessage()">Send</button>
       </div>
     </div>
@@ -201,7 +344,7 @@ CONSTRAINTS (What You Will & Will NOT Do):
 SPECIFIC INSTRUCTIONS FOR TRUST & TRANSPARENCY:
 1. Algorithmic Explanation: When a user asks about game suggestions (addressing the issue where 65% of players only play one game), explain that the suggestion is based on their playtime patterns and current network stability, not on third-party data buying.
 
-2. Performance Transparency: If a user mentions session drops, provide a "Network Health Summary" instead of a generic troubleshooting list.
+2. Performance Transparency: If a user mentions session drops or lag, provide a "Network Health Summary" instead of a generic troubleshooting list.
 
 3. Data Rights Support: If a user asks about their data, explain their right to access and delete it as per Neon Arcade's GDPR commitment.
 
@@ -221,7 +364,6 @@ If user expresses lack of trust or dissatisfaction, immediately offer: "[HUMAN E
     let apiKey = localStorage.getItem('neonclear_api_key') || '';
     let messages = [];
 
-    // Initial AI disclosure
     const AI_DISCLOSURE = "🤖 I'm Neon Clear, an AI Transparency Advocate for Neon Arcade. I'm here to help explain our systems, protect your data rights, and improve your gaming experience through radical honesty. EU AI Act Art. 50 Compliant.";
 
     function saveApiKey() {
@@ -229,17 +371,17 @@ If user expresses lack of trust or dissatisfaction, immediately offer: "[HUMAN E
       if (input && input.startsWith('sk-ant-')) {
         apiKey = input;
         localStorage.setItem('neonclear_api_key', apiKey);
-        document.getElementById('apiKeySetup').classList.add('hidden');
-        document.getElementById('chatContainer').style.display = 'block';
-        // Show welcome message
+        document.getElementById('setupCard').classList.add('hidden');
+        document.getElementById('chatContainer').classList.remove('hidden');
         addMessage(AI_DISCLOSURE + "\n\nHow can I help you today? Whether it's about game performance, your data rights, or how our recommendations work - I'm here to be radically transparent with you.", 'assistant');
       } else {
         alert('Please enter a valid Claude API key (starts with sk-ant-...)');
       }
     }
 
-    if (apiKey) {
-      document.getElementById('apiKeySetup').classList.add('hidden');
+    if (apiKey && apiKey.startsWith('sk-ant-')) {
+      document.getElementById('setupCard').classList.add('hidden');
+      document.getElementById('chatContainer').classList.remove('hidden');
     }
 
     const messagesDiv = document.getElementById('messages');
@@ -255,7 +397,6 @@ If user expresses lack of trust or dissatisfaction, immediately offer: "[HUMAN E
       div.className = `message ${role}${isHandover ? ' handover' : ''}`;
       
       if (role === 'assistant') {
-        // Show AI disclosure only on first assistant message
         if (messages.filter(m => m.role === 'assistant').length === 0) {
           const disclosure = document.createElement('div');
           disclosure.className = 'ai-disclosure';
@@ -285,7 +426,7 @@ If user expresses lack of trust or dissatisfaction, immediately offer: "[HUMAN E
       addMessage(message, 'user');
       
       sendBtn.disabled = true;
-      addMessage('Thinking...', 'assistant');
+      addMessage('Processing...', 'assistant');
 
       const shouldHandover = HANDOVER_TRIGGERS.some(trigger => 
         message.toLowerCase().includes(trigger.toLowerCase())
@@ -335,7 +476,7 @@ If user expresses lack of trust or dissatisfaction, immediately offer: "[HUMAN E
         }
       } catch (error) {
         messagesDiv.removeChild(messagesDiv.lastChild);
-        addMessage(`Connection Error: ${error.message}. Make sure your API key is correct (should start with sk-ant-...)`, 'assistant');
+        addMessage(`Connection Error: ${error.message}. Make sure your API key is correct.`, 'assistant');
       }
 
       sendBtn.disabled = false;
