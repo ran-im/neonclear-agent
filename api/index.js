@@ -1,7 +1,7 @@
-const { OpenAI } = require('openai');
+const Anthropic = require('@anthropic-ai/sdk');
 
-const openai = new OpenAI({
-  apiKey: process.env.OPENAI_API_KEY
+const anthropic = new Anthropic({
+  apiKey: process.env.ANTHROPIC_API_KEY
 });
 
 const SYSTEM_PROMPT = `You are Neon Clear. Intelligent Transparency Agent for Neon Arcade.
@@ -59,31 +59,33 @@ module.exports = async (req, res) => {
     });
   }
 
-  const messages = [
-    { role: 'system', content: SYSTEM_PROMPT }
-  ];
-
+  let claudeMessages = [];
+  
   if (history && Array.isArray(history)) {
-    messages.push(...history);
+    claudeMessages = history.map(msg => ({
+      role: msg.role === 'assistant' ? 'assistant' : 'user',
+      content: msg.content
+    }));
   }
 
-  messages.push({ role: 'user', content: message });
+  claudeMessages.push({ role: 'user', content: message });
 
   try {
-    const completion = await openai.chat.completions.create({
-      model: 'gpt-4o',
-      messages: messages,
-      max_tokens: 1000
+    const response = await anthropic.messages.create({
+      model: 'claude-3-5-sonnet-20241022',
+      max_tokens: 1024,
+      system: SYSTEM_PROMPT,
+      messages: claudeMessages
     });
 
-    const response = completion.choices[0]?.message?.content || 'I apologize, but I could not generate a response.';
+    const responseText = response.content[0]?.text || 'I apologize, but I could not generate a response.';
 
     res.json({
-      response: response,
+      response: responseText,
       handover: false
     });
   } catch (error) {
-    console.error('OpenAI error:', error);
+    console.error('Anthropic error:', error);
     res.status(500).json({ error: 'Failed to generate response' });
   }
 };
