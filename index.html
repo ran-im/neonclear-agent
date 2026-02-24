@@ -436,21 +436,6 @@ If user expresses lack of trust or dissatisfaction, immediately offer: "[HUMAN E
       }
     }
 
-    function saveApiKey() {
-      testAndSaveApiKey();
-    }
-      const input = document.getElementById('apiKey').value.trim();
-      if (input && input.startsWith('sk-ant-')) {
-        apiKey = input;
-        localStorage.setItem('neonclear_api_key', apiKey);
-        document.getElementById('setupCard').classList.add('hidden');
-        document.getElementById('chatContainer').classList.remove('hidden');
-        addMessage(AI_DISCLOSURE + "\n\nHow can I help you today? Whether it's about game performance, your data rights, or how our recommendations work - I'm here to be radically transparent with you.", 'assistant');
-      } else {
-        alert('Please enter a valid Claude API key (starts with sk-ant-...)');
-      }
-    }
-
     if (apiKey && apiKey.startsWith('sk-ant-') && apiKey.length > 20) {
       document.getElementById('setupCard').classList.add('hidden');
       document.getElementById('chatContainer').classList.remove('hidden');
