@@ -169,7 +169,7 @@
       <button onclick="saveApiKey()">Save Key</button>
     </div>
 
-    <div class="chat-container" id="chatContainer">
+    <div class="chat-container" id="chatContainer" style="display: none;">
       <div class="messages" id="messages"></div>
       <div class="input-area">
         <input type="text" id="userInput" placeholder="Ask about data privacy, GDPR rights, or cloud performance..." />
@@ -226,11 +226,15 @@ If user expresses lack of trust or dissatisfaction, immediately offer: "[HUMAN E
 
     function saveApiKey() {
       const input = document.getElementById('apiKey').value.trim();
-      if (input) {
+      if (input && input.startsWith('sk-ant-')) {
         apiKey = input;
         localStorage.setItem('neonclear_api_key', apiKey);
         document.getElementById('apiKeySetup').classList.add('hidden');
         document.getElementById('chatContainer').style.display = 'block';
+        // Show welcome message
+        addMessage(AI_DISCLOSURE + "\n\nHow can I help you today? Whether it's about game performance, your data rights, or how our recommendations work - I'm here to be radically transparent with you.", 'assistant');
+      } else {
+        alert('Please enter a valid Claude API key (starts with sk-ant-...)');
       }
     }
 
@@ -327,11 +331,11 @@ If user expresses lack of trust or dissatisfaction, immediately offer: "[HUMAN E
         } else if (data.error) {
           addMessage(`Error: ${data.error.message}`, 'assistant');
         } else {
-          addMessage('Sorry, I encountered an error. Please try again.', 'assistant');
+          addMessage('Sorry, I encountered an error. Please check your API key and try again.', 'assistant');
         }
       } catch (error) {
         messagesDiv.removeChild(messagesDiv.lastChild);
-        addMessage('Sorry, I encountered an error. Please try again.', 'assistant');
+        addMessage(`Connection Error: ${error.message}. Make sure your API key is correct (should start with sk-ant-...)`, 'assistant');
       }
 
       sendBtn.disabled = false;
