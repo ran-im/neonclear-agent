@@ -309,6 +309,7 @@
         <button onclick="saveApiKey()">Connect</button>
       </div>
       <p class="hint">Get your key from <a href="https://console.anthropic.com" target="_blank">console.anthropic.com</a></p>
+      <p class="hint" style="margin-top: 0.5rem;"><a href="#" onclick="resetApiKey(); return false;">Reset API Key</a></p>
     </div>
 
     <!-- Chat Interface -->
@@ -366,6 +367,15 @@ If user expresses lack of trust or dissatisfaction, immediately offer: "[HUMAN E
 
     const AI_DISCLOSURE = "🤖 I'm Neon Clear, an AI Transparency Advocate for Neon Arcade. I'm here to help explain our systems, protect your data rights, and improve your gaming experience through radical honesty. EU AI Act Art. 50 Compliant.";
 
+    function resetApiKey() {
+      localStorage.removeItem('neonclear_api_key');
+      apiKey = '';
+      messages = [];
+      document.getElementById('setupCard').classList.remove('hidden');
+      document.getElementById('chatContainer').classList.add('hidden');
+      document.getElementById('messages').innerHTML = '';
+    }
+
     function saveApiKey() {
       const input = document.getElementById('apiKey').value.trim();
       if (input && input.startsWith('sk-ant-')) {
@@ -379,9 +389,14 @@ If user expresses lack of trust or dissatisfaction, immediately offer: "[HUMAN E
       }
     }
 
-    if (apiKey && apiKey.startsWith('sk-ant-')) {
+    if (apiKey && apiKey.startsWith('sk-ant-') && apiKey.length > 20) {
       document.getElementById('setupCard').classList.add('hidden');
       document.getElementById('chatContainer').classList.remove('hidden');
+      addMessage(AI_DISCLOSURE + "\n\nHow can I help you today?", 'assistant');
+    } else {
+      // Clear invalid stored key
+      localStorage.removeItem('neonclear_api_key');
+      apiKey = '';
     }
 
     const messagesDiv = document.getElementById('messages');
