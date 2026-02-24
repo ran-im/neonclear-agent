@@ -1,0 +1,14 @@
+{
+  "name": "neonclear-agent",
+  "version": "1.0.0",
+  "description": "Neon Clear - Intelligent Transparency Agent",
+  "main": "index.js",
+  "scripts": {
+ "node index.js    "start":",
+    "dev": "node index.js"
+  },
+  "dependencies": {
+    "vercel": "^37.0.0",
+    "openai": "^4.77.0"
+  }
+}
