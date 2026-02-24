@@ -394,7 +394,11 @@ If user expresses lack of trust or dissatisfaction, immediately offer: "[HUMAN E
       statusDiv.innerHTML = 'Testing API key...';
       
       try {
-        const response = await fetch('https://api.anthropic.com/v1/messages', {
+        // Use CORS proxy to bypass browser restrictions
+        const proxyUrl = 'https://api.allorigins.win/raw?url=';
+        const apiUrl = 'https://api.anthropic.com/v1/messages';
+        
+        const response = await fetch(proxyUrl + encodeURIComponent(apiUrl), {
           method: 'POST',
           headers: {
             'Content-Type': 'application/json',
@@ -507,7 +511,11 @@ If user expresses lack of trust or dissatisfaction, immediately offer: "[HUMAN E
       }
 
       try {
-        const response = await fetch('https://api.anthropic.com/v1/messages', {
+        // Use CORS proxy to bypass browser restrictions
+        const proxyUrl = 'https://api.allorigins.win/raw?url=';
+        const apiUrl = 'https://api.anthropic.com/v1/messages';
+        
+        const response = await fetch(proxyUrl + encodeURIComponent(apiUrl), {
           method: 'POST',
           headers: {
             'Content-Type': 'application/json',
