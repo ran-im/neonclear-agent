@@ -306,10 +306,11 @@
       <h2>Connect Your API Key</h2>
       <div class="api-key-input">
         <input type="password" id="apiKey" placeholder="sk-ant-..." />
-        <button onclick="saveApiKey()">Connect</button>
+        <button onclick="testAndSaveApiKey()">Connect</button>
       </div>
       <p class="hint">Get your key from <a href="https://console.anthropic.com" target="_blank">console.anthropic.com</a></p>
       <p class="hint" style="margin-top: 0.5rem;"><a href="#" onclick="resetApiKey(); return false;">Reset API Key</a></p>
+      <div id="apiStatus" style="margin-top: 1rem; padding: 0.75rem; border-radius: 0.5rem; display: none;"></div>
     </div>
 
     <!-- Chat Interface -->
@@ -374,9 +375,70 @@ If user expresses lack of trust or dissatisfaction, immediately offer: "[HUMAN E
       document.getElementById('setupCard').classList.remove('hidden');
       document.getElementById('chatContainer').classList.add('hidden');
       document.getElementById('messages').innerHTML = '';
+      document.getElementById('apiStatus').style.display = 'none';
+    }
+
+    async function testAndSaveApiKey() {
+      const input = document.getElementById('apiKey').value.trim();
+      const statusDiv = document.getElementById('apiStatus');
+      
+      if (!input) {
+        alert('Please enter an API key');
+        return;
+      }
+      
+      statusDiv.style.display = 'block';
+      statusDiv.style.background = 'rgba(255,193,7,0.1)';
+      statusDiv.style.border = '1px solid #ffc107';
+      statusDiv.style.color = '#ffc107';
+      statusDiv.innerHTML = 'Testing API key...';
+      
+      try {
+        const response = await fetch('https://api.anthropic.com/v1/messages', {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+            'x-api-key': input,
+            'anthropic-version': '2023-06-01'
+          },
+          body: JSON.stringify({
+            model: 'claude-3-5-sonnet-20241022',
+            max_tokens: 10,
+            messages: [{ role: 'user', content: 'hi' }]
+          })
+        });
+        
+        const data = await response.json();
+        
+        if (data.content || response.status === 200) {
+          statusDiv.style.background = 'rgba(0,255,136,0.1)';
+          statusDiv.style.border = '1px solid #00ff88';
+          statusDiv.style.color = '#00ff88';
+          statusDiv.innerHTML = '✓ API key works! Connecting...';
+          apiKey = input;
+          localStorage.setItem('neonclear_api_key', apiKey);
+          setTimeout(() => {
+            document.getElementById('setupCard').classList.add('hidden');
+            document.getElementById('chatContainer').classList.remove('hidden');
+            addMessage(AI_DISCLOSURE + "\n\nHow can I help you today?", 'assistant');
+          }, 1000);
+        } else if (data.error) {
+          statusDiv.style.background = 'rgba(255,68,68,0.1)';
+          statusDiv.style.border = '1px solid #ff4444';
+          statusDiv.style.color = '#ff4444';
+          statusDiv.innerHTML = '✗ Error: ' + data.error.message;
+        }
+      } catch (error) {
+        statusDiv.style.background = 'rgba(255,68,68,0.1)';
+        statusDiv.style.border = '1px solid #ff4444';
+        statusDiv.style.color = '#ff4444';
+        statusDiv.innerHTML = '✗ Connection error: ' + error.message;
+      }
     }
 
     function saveApiKey() {
+      testAndSaveApiKey();
+    }
       const input = document.getElementById('apiKey').value.trim();
       if (input && input.startsWith('sk-ant-')) {
         apiKey = input;
@@ -485,13 +547,13 @@ If user expresses lack of trust or dissatisfaction, immediately offer: "[HUMAN E
           messages.push({ role: 'assistant', content: responseText });
           addMessage(responseText, 'assistant');
         } else if (data.error) {
-          addMessage(`Error: ${data.error.message}`, 'assistant');
+          addMessage(`API Error: ${data.error.message}\n\nType: ${data.error.type || 'unknown'}`, 'assistant');
         } else {
-          addMessage('Sorry, I encountered an error. Please check your API key and try again.', 'assistant');
+          addMessage('Response: ' + JSON.stringify(data), 'assistant');
         }
       } catch (error) {
         messagesDiv.removeChild(messagesDiv.lastChild);
-        addMessage(`Connection Error: ${error.message}. Make sure your API key is correct.`, 'assistant');
+        addMessage(`Error: ${error.message}\n\nThis might be a CORS issue. Try opening the console (F12) for more details.`, 'assistant');
       }
 
       sendBtn.disabled = false;
