@@ -306,7 +306,7 @@
       <h2>Connect Your API Key</h2>
       <div class="api-key-input">
         <input type="password" id="apiKey" placeholder="sk-ant-..." />
-        <button onclick="testAndSaveApiKey()">Connect</button>
+        <button id="connectBtn">Connect</button>
       </div>
       <p class="hint">Get your key from <a href="https://console.anthropic.com" target="_blank">console.anthropic.com</a></p>
       <p class="hint" style="margin-top: 0.5rem;"><a href="#" onclick="resetApiKey(); return false;">Reset API Key</a></p>
@@ -558,6 +558,23 @@ If user expresses lack of trust or dissatisfaction, immediately offer: "[HUMAN E
 
       sendBtn.disabled = false;
     }
+
+    // Add event listeners
+    document.addEventListener('DOMContentLoaded', function() {
+      const connectBtn = document.getElementById('connectBtn');
+      const apiKeyInput = document.getElementById('apiKey');
+      
+      if (connectBtn) {
+        connectBtn.addEventListener('click', testAndSaveApiKey);
+      }
+      if (apiKeyInput) {
+        apiKeyInput.addEventListener('keypress', function(e) {
+          if (e.key === 'Enter') {
+            testAndSaveApiKey();
+          }
+        });
+      }
+    });
   </script>
 </body>
 </html>
