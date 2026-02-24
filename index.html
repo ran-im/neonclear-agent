@@ -395,7 +395,7 @@ If user expresses lack of trust or dissatisfaction, immediately offer: "[HUMAN E
       
       try {
         // Use CORS proxy to bypass browser restrictions
-        const proxyUrl = 'https://api.allorigins.win/raw?url=';
+        const proxyUrl = 'https://corsproxy.io/?';
         const apiUrl = 'https://api.anthropic.com/v1/messages';
         
         const response = await fetch(proxyUrl + encodeURIComponent(apiUrl), {
@@ -512,7 +512,7 @@ If user expresses lack of trust or dissatisfaction, immediately offer: "[HUMAN E
 
       try {
         // Use CORS proxy to bypass browser restrictions
-        const proxyUrl = 'https://api.allorigins.win/raw?url=';
+        const proxyUrl = 'https://corsproxy.io/?';
         const apiUrl = 'https://api.anthropic.com/v1/messages';
         
         const response = await fetch(proxyUrl + encodeURIComponent(apiUrl), {
